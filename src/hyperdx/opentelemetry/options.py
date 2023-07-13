@@ -230,7 +230,7 @@ class HyperDXOptions:
         dataset: str = None,
         metrics_dataset: str = None,
         enable_local_visualizations: bool = False,
-        exporter_protocol: str = EXPORTER_PROTOCOL_GRPC,
+        exporter_protocol: str = EXPORTER_PROTOCOL_HTTP_PROTO,
         traces_exporter_protocol: str = None,
         metrics_exporter_protocol: str = None
     ):
