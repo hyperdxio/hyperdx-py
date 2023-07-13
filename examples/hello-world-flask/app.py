@@ -1,4 +1,7 @@
+import logging
 import os
+import requests
+
 from flask import Flask
 from opentelemetry import trace, baggage, metrics
 from opentelemetry.context import attach, detach
@@ -19,10 +22,13 @@ tracer = trace.get_tracer("hello_world_flask_tracer")
 meter = metrics.get_meter("hello_world_flask_meter")
 bee_counter = meter.create_counter("bee_counter")
 
+logger = logging.getLogger(__name__)
+
 
 @app.route("/")
 # Recommended: use attach and detach tokens for Context management with Baggage
 def hello_world():
+    logger.warn("processing request to /")
     # adding baggage attributes (key, value)
     token = attach(baggage.set_baggage("queen", "bee"))
 
@@ -43,6 +49,12 @@ def hello_world():
     detach(token)
     # counter incremented by 1, attributes (route) associated with the increment
     bee_counter.add(1, {'app.route': '/'})
+    logger.warn("finished processing request to /")
+
+    logger.warn("sending request to /health")
+    resp = requests.post("https://in.hyperdx.io/health", json={"message": "Hello world"})
+    logger.warn(f"received response from /health {resp.status_code}")
+
     return "Hello World"
 
 

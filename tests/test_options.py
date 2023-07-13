@@ -22,7 +22,7 @@ from hyperdx.opentelemetry.options import (
     HYPERDX_METRICS_APIKEY,
     HYPERDX_METRICS_DATASET,
     HYPERDX_TRACES_APIKEY,
-    SAMPLE_RATE
+    SAMPLE_RATE,
 )
 
 EXPECTED_ENDPOINT = "expected endpoint"
@@ -32,14 +32,14 @@ def test_defaults():
     options = HyperDXOptions()
     assert options.traces_apikey is None
     assert options.metrics_apikey is None
-    assert options.get_traces_endpoint() == "https://in-otel.hyperdx.io"
-    assert options.get_metrics_endpoint() == "https://in-otel.hyperdx.io"
+    assert options.get_traces_endpoint() == "https://in-otel.hyperdx.io/v1/traces"
+    assert options.get_metrics_endpoint() == "https://in-otel.hyperdx.io/v1/metrics"
     assert options.service_name == "unknown_service:python"
     assert options.dataset is None
     assert options.metrics_dataset is None
     assert options.enable_local_visualizations is False
-    assert options.traces_exporter_protocol is EXPORTER_PROTOCOL_GRPC
-    assert options.metrics_exporter_protocol is EXPORTER_PROTOCOL_GRPC
+    assert options.traces_exporter_protocol is EXPORTER_PROTOCOL_HTTP_PROTO
+    assert options.metrics_exporter_protocol is EXPORTER_PROTOCOL_HTTP_PROTO
 
 
 def test_can_set_service_name_with_param():
@@ -55,31 +55,35 @@ def test_can_set_service_name_with_envvar(monkeypatch):
 
 def test_can_set_generic_api_endpoint_with_envvar(monkeypatch):
     monkeypatch.setenv(HYPERDX_API_ENDPOINT, EXPECTED_ENDPOINT)
-    options = HyperDXOptions()
+    options = HyperDXOptions(exporter_protocol=EXPORTER_PROTOCOL_GRPC)
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_can_set_generic_api_endpoint_with_param():
-    options = HyperDXOptions(endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(
+        endpoint=EXPECTED_ENDPOINT, exporter_protocol=EXPORTER_PROTOCOL_GRPC
+    )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_can_set_traces_endpoint_with_param():
-    options = HyperDXOptions(traces_endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(
+        traces_endpoint=EXPECTED_ENDPOINT, exporter_protocol=EXPORTER_PROTOCOL_GRPC
+    )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_can_set_traces_endpoint_with_traces_envvar(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, EXPECTED_ENDPOINT)
-    options = HyperDXOptions()
+    options = HyperDXOptions(exporter_protocol=EXPORTER_PROTOCOL_GRPC)
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_can_set_traces_endpoint_with_endpoint_envvar(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_ENDPOINT, EXPECTED_ENDPOINT)
-    options = HyperDXOptions()
+    options = HyperDXOptions(exporter_protocol=EXPORTER_PROTOCOL_GRPC)
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
@@ -87,7 +91,8 @@ def test_traces_endpoint_set_from_generic_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_ENDPOINT, EXPECTED_ENDPOINT)
     options = HyperDXOptions(
         endpoint="generic param",
-        traces_endpoint="specific param"
+        traces_endpoint="specific param",
+        exporter_protocol=EXPORTER_PROTOCOL_GRPC,
     )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
@@ -96,26 +101,26 @@ def test_traces_endpoint_specific_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, EXPECTED_ENDPOINT)
     options = HyperDXOptions(
         endpoint="generic param",
-        traces_endpoint="specific param"
+        traces_endpoint="specific param",
+        exporter_protocol=EXPORTER_PROTOCOL_GRPC,
     )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_traces_endpoint_set_from_specific_param_beats_generic_param():
     options = HyperDXOptions(
-        endpoint="generic param",
-        traces_endpoint=EXPECTED_ENDPOINT
+        endpoint="generic param", traces_endpoint=EXPECTED_ENDPOINT
     )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
-def test_traces_endpoint_set_from_traces_env_beats_params(
-        monkeypatch):
+def test_traces_endpoint_set_from_traces_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_ENDPOINT, "generic env")
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, EXPECTED_ENDPOINT)
     options = HyperDXOptions(
         endpoint="generic param",
-        traces_endpoint="specific param"
+        traces_endpoint="specific param",
+        exporter_protocol=EXPORTER_PROTOCOL_GRPC,
     )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
@@ -127,23 +132,27 @@ def test_can_set_metrics_endpoint_with_param():
 
 def test_can_set_metrics_endpoint_with_metrics_envvar(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_METRICS_ENDPOINT, EXPECTED_ENDPOINT)
-    options = HyperDXOptions()
+    options = HyperDXOptions(exporter_protocol=EXPORTER_PROTOCOL_GRPC)
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_can_set_metrics_endpoint_with_endpoint_envvar(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_ENDPOINT, EXPECTED_ENDPOINT)
-    options = HyperDXOptions()
+    options = HyperDXOptions(exporter_protocol=EXPORTER_PROTOCOL_GRPC)
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_get_traces_endpoint_returns_endpoint_when_traces_endpoint_not_set():
-    options = HyperDXOptions(endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(
+        endpoint=EXPECTED_ENDPOINT, exporter_protocol=EXPORTER_PROTOCOL_GRPC
+    )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_get_metrics_endpoint_returns_endpoint_when_metrics_endpoint_not_set():
-    options = HyperDXOptions(endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(
+        endpoint=EXPECTED_ENDPOINT, exporter_protocol=EXPORTER_PROTOCOL_GRPC
+    )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
@@ -264,10 +273,7 @@ def test_can_set_traces_insecure_with_traces_param():
 
 
 def test_traces_insecure_set_with_specific_param_beats_generic():
-    options = HyperDXOptions(
-        endpoint_insecure=False,
-        traces_endpoint_insecure=True
-    )
+    options = HyperDXOptions(endpoint_insecure=False, traces_endpoint_insecure=True)
     assert options.traces_endpoint_insecure is True
 
 
@@ -285,20 +291,14 @@ def test_can_set_traces_insecure_with_traces_envvar(monkeypatch):
 
 def test_traces_insecure_generic_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_INSECURE, "TRUE")
-    options = HyperDXOptions(
-        endpoint_insecure=False,
-        traces_endpoint_insecure=False
-    )
+    options = HyperDXOptions(endpoint_insecure=False, traces_endpoint_insecure=False)
     assert options.traces_endpoint_insecure is True
 
 
 def test_traces_insecure_specific_env_beats_generic_env_and_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_INSECURE, "FALSE")
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_TRACES_INSECURE, "TRUE")
-    options = HyperDXOptions(
-        endpoint_insecure=False,
-        traces_endpoint_insecure=False
-    )
+    options = HyperDXOptions(endpoint_insecure=False, traces_endpoint_insecure=False)
     assert options.traces_endpoint_insecure is True
 
 
@@ -318,10 +318,7 @@ def test_can_set_metrics_insecure_with_traces_param():
 
 
 def test_metrics_insecure_specific_param_beats_generic_param():
-    options = HyperDXOptions(
-        endpoint_insecure=False,
-        metrics_endpoint_insecure=True
-    )
+    options = HyperDXOptions(endpoint_insecure=False, metrics_endpoint_insecure=True)
     assert options.metrics_endpoint_insecure is True
 
 
@@ -339,20 +336,14 @@ def test_can_set_metrics_insecure_with_traces_envvar(monkeypatch):
 
 def test_metrics_insecure_generic_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_INSECURE, "TRUE")
-    options = HyperDXOptions(
-        endpoint_insecure=False,
-        metrics_endpoint_insecure=False
-    )
+    options = HyperDXOptions(endpoint_insecure=False, metrics_endpoint_insecure=False)
     assert options.metrics_endpoint_insecure is True
 
 
 def test_metrics_insecure_specific_env_beats_generic_env_and_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_INSECURE, "FALSE")
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_METRICS_INSECURE, "TRUE")
-    options = HyperDXOptions(
-        endpoint_insecure=False,
-        metrics_endpoint_insecure=False
-    )
+    options = HyperDXOptions(endpoint_insecure=False, metrics_endpoint_insecure=False)
     assert options.metrics_endpoint_insecure is True
 
 
@@ -360,7 +351,8 @@ def test_metrics_endpoint_set_from_generic_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_ENDPOINT, EXPECTED_ENDPOINT)
     options = HyperDXOptions(
         endpoint="generic param",
-        metrics_endpoint="specific param"
+        metrics_endpoint="specific param",
+        exporter_protocol=EXPORTER_PROTOCOL_GRPC,
     )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
@@ -368,27 +360,23 @@ def test_metrics_endpoint_set_from_generic_env_beats_params(monkeypatch):
 def test_metrics_endpoint_specific_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_METRICS_ENDPOINT, EXPECTED_ENDPOINT)
     options = HyperDXOptions(
-        endpoint="generic param",
-        metrics_endpoint="specific param"
+        endpoint="generic param", metrics_endpoint="specific param"
     )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
 def test_metrics_endpoint_set_from_specific_param_beats_generic_param():
     options = HyperDXOptions(
-        endpoint="generic param",
-        metrics_endpoint=EXPECTED_ENDPOINT
+        endpoint="generic param", metrics_endpoint=EXPECTED_ENDPOINT
     )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
-def test_metrics_endpoint_set_from_metrics_env_beats_params(
-        monkeypatch):
+def test_metrics_endpoint_set_from_metrics_env_beats_params(monkeypatch):
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_ENDPOINT, "generic env")
     monkeypatch.setenv(OTEL_EXPORTER_OTLP_METRICS_ENDPOINT, EXPECTED_ENDPOINT)
     options = HyperDXOptions(
-        endpoint="generic param",
-        metrics_endpoint="specific param"
+        endpoint="generic param", metrics_endpoint="specific param"
     )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
@@ -432,7 +420,9 @@ def test_local_vis_from_env_beats_param(monkeypatch):
     assert options.enable_local_visualizations is True
 
 
-def test_get_traces_endpoint_with_grpc_protocol_returns_correctly_formatted_endpoint(monkeypatch):
+def test_get_traces_endpoint_with_grpc_protocol_returns_correctly_formatted_endpoint(
+    monkeypatch,
+):
     # grpc
     protocol = EXPORTER_PROTOCOL_GRPC
 
@@ -441,13 +431,13 @@ def test_get_traces_endpoint_with_grpc_protocol_returns_correctly_formatted_endp
     assert options.get_traces_endpoint() == DEFAULT_API_ENDPOINT
 
     # generic endpoint param
-    options = HyperDXOptions(
-        exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
     # traces endpoint param
     options = HyperDXOptions(
-        exporter_protocol=protocol, traces_endpoint=EXPECTED_ENDPOINT)
+        exporter_protocol=protocol, traces_endpoint=EXPECTED_ENDPOINT
+    )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
     # generic endpoint env
@@ -461,7 +451,9 @@ def test_get_traces_endpoint_with_grpc_protocol_returns_correctly_formatted_endp
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
-def test_get_traces_endpoint_with_http_proto_protocol_returns_correctly_formatted_endpoint(monkeypatch):
+def test_get_traces_endpoint_with_http_proto_protocol_returns_correctly_formatted_endpoint(
+    monkeypatch,
+):
     # http
     protocol = EXPORTER_PROTOCOL_HTTP_PROTO
 
@@ -470,13 +462,13 @@ def test_get_traces_endpoint_with_http_proto_protocol_returns_correctly_formatte
     assert options.get_traces_endpoint() == DEFAULT_API_ENDPOINT + "/v1/traces"
 
     # generic endpoint param
-    options = HyperDXOptions(
-        exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT + "/v1/traces"
 
     # traces endpoint param
     options = HyperDXOptions(
-        exporter_protocol=protocol, traces_endpoint=EXPECTED_ENDPOINT)
+        exporter_protocol=protocol, traces_endpoint=EXPECTED_ENDPOINT
+    )
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
     # generic endpoint env
@@ -490,7 +482,9 @@ def test_get_traces_endpoint_with_http_proto_protocol_returns_correctly_formatte
     assert options.get_traces_endpoint() == EXPECTED_ENDPOINT
 
 
-def test_get_metrics_endpoint_with_grpc_protocol_returns_correctly_formatted_endpoint(monkeypatch):
+def test_get_metrics_endpoint_with_grpc_protocol_returns_correctly_formatted_endpoint(
+    monkeypatch,
+):
     # grpc
     protocol = EXPORTER_PROTOCOL_GRPC
 
@@ -499,13 +493,13 @@ def test_get_metrics_endpoint_with_grpc_protocol_returns_correctly_formatted_end
     assert options.get_metrics_endpoint() == DEFAULT_API_ENDPOINT
 
     # generic endpoint param
-    options = HyperDXOptions(
-        exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
     # metrics endpoint param
     options = HyperDXOptions(
-        exporter_protocol=protocol, metrics_endpoint=EXPECTED_ENDPOINT)
+        exporter_protocol=protocol, metrics_endpoint=EXPECTED_ENDPOINT
+    )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
     # generic endpoint env
@@ -519,7 +513,9 @@ def test_get_metrics_endpoint_with_grpc_protocol_returns_correctly_formatted_end
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
 
-def test_get_metrics_endpoint_with_http_proto_protocol_returns_correctly_formatted_endpoint(monkeypatch):
+def test_get_metrics_endpoint_with_http_proto_protocol_returns_correctly_formatted_endpoint(
+    monkeypatch,
+):
     # http
     protocol = EXPORTER_PROTOCOL_HTTP_PROTO
 
@@ -528,13 +524,13 @@ def test_get_metrics_endpoint_with_http_proto_protocol_returns_correctly_formatt
     assert options.get_metrics_endpoint() == DEFAULT_API_ENDPOINT + "/v1/metrics"
 
     # generic endpoint param
-    options = HyperDXOptions(
-        exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
+    options = HyperDXOptions(exporter_protocol=protocol, endpoint=EXPECTED_ENDPOINT)
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT + "/v1/metrics"
 
     # metrics endpoint param
     options = HyperDXOptions(
-        exporter_protocol=protocol, metrics_endpoint=EXPECTED_ENDPOINT)
+        exporter_protocol=protocol, metrics_endpoint=EXPECTED_ENDPOINT
+    )
     assert options.get_metrics_endpoint() == EXPECTED_ENDPOINT
 
     # generic endpoint env
