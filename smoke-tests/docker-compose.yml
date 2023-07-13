@@ -1,0 +1,72 @@
+version: '3.0'
+
+x-env-base:
+  &env_base
+  HYPERDX_API_ENDPOINT: http://collector:4317
+  HYPERDX_API_KEY: bogus_key
+  HYPERDX_DATASET: bogus_dataset
+  HYPERDX_METRICS_DATASET: bogus_dataset
+  OTEL_METRIC_EXPORT_INTERVAL: 5000
+  OTEL_SERVICE_NAME: "otel-python-example"
+  OTEL_EXPORTER_OTLP_INSECURE: "true"
+  DEBUG: "true"
+
+x-app-base:
+  &app_base
+  build:
+    context: ../
+    dockerfile: ./examples/hello-world/Dockerfile
+  image: hyperdx-py/hello-world
+  depends_on:
+    - collector
+
+x-flask-app-base:
+  &flask_app_base
+  build:
+    context: ../
+    dockerfile: ./examples/hello-world-flask/Dockerfile
+  image: hyperdx-py/hello-world-flask
+  depends_on:
+    - collector
+
+services:
+  collector:
+    image: otel/opentelemetry-collector:0.81.0
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - "./collector/otel-collector-config.yaml:/etc/otel-collector-config.yaml"
+      - "./collector:/var/lib"
+
+  app-sdk-grpc:
+    <<: *app_base
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      <<: *env_base
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+
+  app-sdk-http:
+    <<: *app_base
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      <<: *env_base
+      HYPERDX_API_ENDPOINT: http://collector:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+
+  app-sdk-grpc-flask:
+    <<: *flask_app_base
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      <<: *env_base
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+
+  app-sdk-http-flask:
+    <<: *flask_app_base
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      <<: *env_base
+      HYPERDX_API_ENDPOINT: http://collector:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf

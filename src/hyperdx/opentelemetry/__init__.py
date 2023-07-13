@@ -1,0 +1,2 @@
+from hyperdx.opentelemetry.distro import configure_opentelemetry
+from hyperdx.opentelemetry.options import HyperDXOptions

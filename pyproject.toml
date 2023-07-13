@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "hyperdx-opentelemetry"
+version = "0.0.1"
+description = "HyperDX OpenTelemetry Distro for Python"
+authors = ["HyperDX <support@hyperdx.io>"]
+readme = "README.md"
+packages = [{include = "hyperdx", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.7, >= 3.7.2"
+opentelemetry-api = "1.17.0"
+opentelemetry-sdk = "1.17.0"
+opentelemetry-exporter-otlp = "1.17.0"
+opentelemetry-instrumentation = "0.38b0"
+
+[tool.poetry.group.dev.dependencies]
+coverage = ">=6.5,<8.0"
+pytest = "^7.2.0"
+pylint = "^2.16.0"
+pycodestyle = "^2.10.0"
+importlib-metadata = { version = ">=0.12", python = "<3.8" }
+requests-mock = "^1.10.0"
+
+[tool.poetry.plugins."opentelemetry_distro"]
+distro = "hyperdx.opentelemetry.distro:HyperDXDistro"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
