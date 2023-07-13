@@ -52,6 +52,9 @@ INVALID_LOCAL_VIS_ERROR = (
     + "HYPERDX_ENABLE_LOCAL_VISUALIZATIONS environment variable. "
     + "Defaulting to false."
 )
+INVALID_LOGS_INSECURE_ERROR = (
+    "Unable to parse " + "OTEL_EXPORTER_OTLP_LOGS_INSECURE. Defaulting to False."
+)
 INVALID_METRICS_INSECURE_ERROR = (
     "Unable to parse " + "OTEL_EXPORTER_OTLP_METRICS_INSECURE. Defaulting to False."
 )

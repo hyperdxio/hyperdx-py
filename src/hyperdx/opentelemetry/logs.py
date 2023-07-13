@@ -1,4 +1,7 @@
-from opentelemetry.sdk._logs import LoggerProvider
+import logging
+
+from opentelemetry._logs import set_logger_provider
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.exporter.otlp.proto.http._log_exporter import (
@@ -8,8 +11,10 @@ from opentelemetry.exporter.otlp.proto.grpc._log_exporter import (
     OTLPLogExporter as GRPCOTLPLogExporter,
 )
 
+from hyperdx.opentelemetry.options import HyperDXOptions
 
-def create_logger_provider(options: HyperDXOptions, resource: Resource):
+
+def set_root_logger_provider(options: HyperDXOptions, resource: Resource):
     """
     Configures and returns a new LoggerProvier to send logs telemetry.
 
@@ -23,6 +28,7 @@ def create_logger_provider(options: HyperDXOptions, resource: Resource):
 
     logger_provider = LoggerProvider()
 
+
     if options.logs_exporter_protocol == "grpc":
         exporter = GRPCOTLPLogExporter(
             endpoint=options.get_logs_endpoint(),
@@ -34,6 +40,8 @@ def create_logger_provider(options: HyperDXOptions, resource: Resource):
             endpoint=options.get_logs_endpoint(),
             headers=options.get_logs_headers(),
         )
+
+    set_logger_provider(logger_provider)
     logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
 
     if options.debug:
@@ -41,4 +49,6 @@ def create_logger_provider(options: HyperDXOptions, resource: Resource):
             BatchLogRecordProcessor(ConsoleLogExporter())
         )
 
-    return logger_provider
+    handler = LoggingHandler(level=logging.NOTSET, logger_provider=logger_provider)
+    # Attach OTLP handler to root logger
+    logging.getLogger().addHandler(handler)
