@@ -1,5 +1,6 @@
 import logging
 import os
+import requests
 
 from flask import Flask
 from opentelemetry import trace, baggage, metrics
@@ -49,6 +50,11 @@ def hello_world():
     # counter incremented by 1, attributes (route) associated with the increment
     bee_counter.add(1, {'app.route': '/'})
     logger.warn("finished processing request to /")
+
+    logger.warn("sending request to /health")
+    resp = requests.post("https://in.hyperdx.io/health", json={"message": "Hello world"})
+    logger.warn(f"received response from /health {resp.status_code}")
+
     return "Hello World"
 
 
