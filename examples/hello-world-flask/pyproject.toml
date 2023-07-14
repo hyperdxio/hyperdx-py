@@ -10,8 +10,8 @@ python = "^3.10"
 flask = "^2.2.2"
 hyperdx-opentelemetry = {path = "../../", develop = true}
 opentelemetry-api = "^1.18.0"
-opentelemetry-instrumentation-flask = "^0.39b0"
-requests = "^2.31.0"
+opentelemetry-instrumentation-requests = "0.39b0"
+opentelemetry-instrumentation-flask = "0.39b0"
 
 [build-system]
 requires = ["poetry-core"]

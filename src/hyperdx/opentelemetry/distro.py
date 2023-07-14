@@ -24,7 +24,10 @@ from opentelemetry.metrics import set_meter_provider
 from opentelemetry.trace import set_tracer_provider
 
 from hyperdx.opentelemetry.logs import set_logging_handler
-from hyperdx.opentelemetry.manual import instrument_custom_libs
+from hyperdx.opentelemetry.manual import (
+    configure_custom_env_vars,
+    instrument_custom_libs,
+)
 from hyperdx.opentelemetry.metrics import create_meter_provider
 from hyperdx.opentelemetry.options import HyperDXOptions
 from hyperdx.opentelemetry.resource import create_resource
@@ -51,6 +54,8 @@ def configure_opentelemetry(
     _logger.info("Configuring OpenTelemetry using HyperDX distro")
     _logger.debug(vars(options))
     resource = create_resource(options)
+    configure_custom_env_vars(options, resource)
+
     tracer_provider = create_tracer_provider(options, resource)
     set_tracer_provider(tracer_provider)
     set_logging_handler(options)
@@ -58,6 +63,7 @@ def configure_opentelemetry(
         set_meter_provider(create_meter_provider(options, resource))
 
     instrument_custom_libs(options, resource, tracer_provider)
+
 
 # pylint: disable=too-few-public-methods
 class HyperDXDistro(BaseDistro):
