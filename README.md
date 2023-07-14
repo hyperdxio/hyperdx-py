@@ -12,7 +12,7 @@ It makes getting started with OpenTelemetry and HyperDX easier!
 
 Latest release built with:
 
-- [OpenTelemetry version 1.17.0/0.38b0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.17.0)
+- [OpenTelemetry version 1.18.0/0.39b0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.18.0)
 
 ## Requirements
 
@@ -22,17 +22,7 @@ Latest release built with:
 
 HyperDX's Distribution of OpenTelemetry for Python allows you to streamline configuration and to instrument as quickly and easily as possible.
 
-- [Documentation](https://docs.hyperdx.io/getting-data-in/opentelemetry/python/)
-- [Examples](/examples/)
-- See [DEVELOPING.md](/DEVELOPING.md) for additional instructions for building and testing this project in development.
-
-## Why would I want to use this?
-
-- Streamlined configuration for sending data to HyperDX!
-- Easy interop with existing instrumentation with OpenTelemetry!
-- Deterministic sampling!
-- Multi-span attributes!
-- Local visualizations!
+- [Documentation](https://www.hyperdx.io/docs/install/python)
 
 ## License
 
