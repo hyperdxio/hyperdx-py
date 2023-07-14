@@ -49,7 +49,6 @@ def _instrument_requests(
         pass
 
 
-# FIXME: capture headers + body
 def _instrument_urllib(
     options: HyperDXOptions,
     tracer_provider: TracerProvider,
@@ -57,7 +56,7 @@ def _instrument_urllib(
 ):
     try:
         from http import client
-        from opentelemetry.instrumentation.urllib import urllibinstrumentor
+        from opentelemetry.instrumentation.urllib import URLLibInstrumentor
         from urllib.request import Request
 
         def request_hook(span, request_obj: Request):
@@ -68,12 +67,14 @@ def _instrument_urllib(
                 span.set_attribute("http.request.body", decode_body(request_obj.data))
 
         def response_hook(span, request_obj, response: client.HTTPResponse):
-            for k, v in response.headers.items():
+            headers = dict(response.info())
+            for k, v in headers.items():
                 span.set_attribute("http.response.header.%s" % k.lower(), v)
-            # if response.text:
-            #     span.set_attribute("http.response.body", response.text)
+            body = response.read()
+            if body:
+                span.set_attribute("http.response.body", decode_body(body))
 
-        urllibinstrumentor().instrument(
+        URLLibInstrumentor().instrument(
             excluded_urls=",".join(options.get_all_endpoints()),
             meter_provider=meter_provider,
             request_hook=request_hook,
@@ -151,6 +152,7 @@ def instrument_custom_libs(
     tracer_provider: TracerProvider,
     meter_provider: MeterProvider,
 ):
+    _instrument_urllib(options, tracer_provider, meter_provider)
     _instrument_requests(options, tracer_provider, meter_provider)
     _instrument_flask(options, tracer_provider, meter_provider)
     _instrument_fastapi(options, tracer_provider, meter_provider)
