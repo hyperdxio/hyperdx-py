@@ -57,12 +57,13 @@ def configure_opentelemetry(
     configure_custom_env_vars(options, resource)
 
     tracer_provider = create_tracer_provider(options, resource)
+    meter_provider = create_meter_provider(options, resource)
     set_tracer_provider(tracer_provider)
     set_logging_handler(options)
     if options.metrics_dataset:
-        set_meter_provider(create_meter_provider(options, resource))
+        set_meter_provider(meter_provider)
 
-    instrument_custom_libs(options, resource, tracer_provider)
+    instrument_custom_libs(options, resource, tracer_provider, meter_provider)
 
 
 # pylint: disable=too-few-public-methods

@@ -503,3 +503,13 @@ class HyperDXOptions:
         if self.dataset and is_classic(self.logs_apikey):
             headers["x-hyperdx-dataset"] = self.dataset
         return headers
+
+    def get_all_endpoints(self):
+        """
+        Returns all endpoints.
+        """
+        return [
+            self.get_traces_endpoint(),
+            self.get_metrics_endpoint(),
+            self.get_logs_endpoint(),
+        ]

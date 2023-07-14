@@ -1,5 +1,6 @@
 import os
 
+from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 
@@ -15,7 +16,11 @@ def decode_body(body):
         return body
 
 
-def _instrument_requests(tracer_provider: TracerProvider):
+def _instrument_requests(
+    options: HyperDXOptions,
+    tracer_provider: TracerProvider,
+    meter_provider: MeterProvider,
+):
     try:
         from opentelemetry.instrumentation.requests import RequestsInstrumentor
 
@@ -34,24 +39,73 @@ def _instrument_requests(tracer_provider: TracerProvider):
                 span.set_attribute("http.response.body", response.text)
 
         RequestsInstrumentor().instrument(
-            tracer_provider=tracer_provider,
+            excluded_urls=",".join(options.get_all_endpoints()),
+            meter_provider=meter_provider,
             request_hook=request_hook,
             response_hook=response_hook,
+            tracer_provider=tracer_provider,
         )
     except ImportError as e:
         pass
 
 
-def _instrument_flask(tracer_provider: TracerProvider):
+# FIXME: capture headers + body
+def _instrument_urllib(
+    options: HyperDXOptions,
+    tracer_provider: TracerProvider,
+    meter_provider: MeterProvider,
+):
     try:
-        from opentelemetry.instrumentation.flask import FlaskInstrumentor
+        from http import client
+        from opentelemetry.instrumentation.urllib import urllibinstrumentor
+        from urllib.request import Request
 
-        FlaskInstrumentor().instrument(tracer_provider=tracer_provider)
+        def request_hook(span, request_obj: Request):
+            for header in request_obj.header_items():
+                k, v = header
+                span.set_attribute("http.request.header.%s" % k.lower(), v)
+            if request_obj.data:
+                span.set_attribute("http.request.body", decode_body(request_obj.data))
+
+        def response_hook(span, request_obj, response: client.HTTPResponse):
+            for k, v in response.headers.items():
+                span.set_attribute("http.response.header.%s" % k.lower(), v)
+            # if response.text:
+            #     span.set_attribute("http.response.body", response.text)
+
+        urllibinstrumentor().instrument(
+            excluded_urls=",".join(options.get_all_endpoints()),
+            meter_provider=meter_provider,
+            request_hook=request_hook,
+            response_hook=response_hook,
+            tracer_provider=tracer_provider,
+        )
     except ImportError as e:
         pass
 
 
-def _instrument_fastapi(tracer_provider: TracerProvider):
+def _instrument_flask(
+    options: HyperDXOptions,
+    tracer_provider: TracerProvider,
+    meter_provider: MeterProvider,
+):
+    try:
+        from opentelemetry.instrumentation.flask import FlaskInstrumentor
+
+        FlaskInstrumentor().instrument(
+            excluded_urls=",".join(options.get_all_endpoints()),
+            meter_provider=meter_provider,
+            tracer_provider=tracer_provider,
+        )
+    except ImportError as e:
+        pass
+
+
+def _instrument_fastapi(
+    options: HyperDXOptions,
+    tracer_provider: TracerProvider,
+    meter_provider: MeterProvider,
+):
     try:
         from opentelemetry.instrumentation.fastapi import (
             FastAPIInstrumentor,
@@ -59,11 +113,15 @@ def _instrument_fastapi(tracer_provider: TracerProvider):
         )
 
         def client_response_hook(span: FastAPISpan, message: dict):
-            if "body" in message:
-                span.set_attribute("http.response.body", decode_body(message["body"]))
+            if span and span.is_recording():
+                if "body" in message:
+                    span.set_attribute("http.response.body", decode_body(message["body"]))
 
         FastAPIInstrumentor().instrument(
-            tracer_provider=tracer_provider, client_response_hook=client_response_hook
+            client_response_hook=client_response_hook,
+            excluded_urls=",".join(options.get_all_endpoints()),
+            meter_provider=meter_provider,
+            tracer_provider=tracer_provider,
         )
     except ImportError as e:
         pass
@@ -88,8 +146,11 @@ def configure_custom_env_vars(options: HyperDXOptions, resource: Resource):
 
 
 def instrument_custom_libs(
-    options: HyperDXOptions, resource: Resource, tracer_provider: TracerProvider
+    options: HyperDXOptions,
+    resource: Resource,
+    tracer_provider: TracerProvider,
+    meter_provider: MeterProvider,
 ):
-    _instrument_requests(tracer_provider)
-    _instrument_flask(tracer_provider)
-    _instrument_fastapi(tracer_provider)
+    _instrument_requests(options, tracer_provider, meter_provider)
+    _instrument_flask(options, tracer_provider, meter_provider)
+    _instrument_fastapi(options, tracer_provider, meter_provider)
