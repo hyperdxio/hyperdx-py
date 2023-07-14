@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyperdx-opentelemetry"
-version = "0.0.2"
+version = "0.0.2-1"
 description = "HyperDX OpenTelemetry Distro for Python"
 authors = ["HyperDX <support@hyperdx.io>"]
 readme = "README.md"
