@@ -70,3 +70,4 @@ services:
       <<: *env_base
       HYPERDX_API_ENDPOINT: http://collector:4318
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      HYPERDX_ENABLE_ADVANCED_NETWORK_CAPTURE: 1
