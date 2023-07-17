@@ -129,18 +129,20 @@ def _instrument_fastapi(
 
 
 def configure_custom_env_vars(options: HyperDXOptions, resource: Resource):
-    os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_REQUEST"] = os.getenv(
-        "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_REQUEST", ".*"
-    )
-    os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_RESPONSE"] = os.getenv(
-        "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_RESPONSE", ".*"
-    )
-    os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST"] = os.getenv(
-        "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST", ".*"
-    )
-    os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE"] = os.getenv(
-        "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE", ".*"
-    )
+    if options.enable_advanced_network_capture:
+        os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_REQUEST"] = os.getenv(
+            "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_REQUEST", ".*"
+        )
+        os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_RESPONSE"] = os.getenv(
+            "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_RESPONSE", ".*"
+        )
+        os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST"] = os.getenv(
+            "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST", ".*"
+        )
+        os.environ["OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE"] = os.getenv(
+            "OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE", ".*"
+        )
+
     os.environ["OTEL_PYTHON_LOG_CORRELATION"] = os.getenv(
         "OTEL_PYTHON_LOG_CORRELATION", "true"
     )
@@ -152,7 +154,8 @@ def instrument_custom_libs(
     tracer_provider: TracerProvider,
     meter_provider: MeterProvider,
 ):
-    _instrument_urllib(options, tracer_provider, meter_provider)
-    _instrument_requests(options, tracer_provider, meter_provider)
-    _instrument_flask(options, tracer_provider, meter_provider)
-    _instrument_fastapi(options, tracer_provider, meter_provider)
+    if options.enable_advanced_network_capture:
+        _instrument_urllib(options, tracer_provider, meter_provider)
+        _instrument_requests(options, tracer_provider, meter_provider)
+        _instrument_flask(options, tracer_provider, meter_provider)
+        _instrument_fastapi(options, tracer_provider, meter_provider)
