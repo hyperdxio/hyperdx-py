@@ -4,6 +4,8 @@
 [![CircleCI](https://circleci.com/gh/hyperdxio/hyperdx-opentelemetry-python.svg?style=shield)](https://circleci.com/gh/hyperdxio/hyperdx-opentelemetry-python)
 [![PyPi](https://img.shields.io/pypi/v/hyperdx-opentelemetry)](https://pypi.org/project/hyperdx-opentelemetry/)
 
+> This project is a fork from https://github.com/honeycombio/honeycomb-opentelemetry-python
+
 **STATUS: this library is BETA.**
 You're welcome to try it, and let us know your feedback in the issues!
 
