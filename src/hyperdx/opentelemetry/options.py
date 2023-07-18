@@ -21,6 +21,7 @@ from grpc import ssl_channel_credentials
 # Environment Variable Names
 DEBUG = "DEBUG"
 HYPERDX_ENABLE_LOCAL_VISUALIZATIONS = "HYPERDX_ENABLE_LOCAL_VISUALIZATIONS"
+HYPERDX_ENABLE_ADVANCED_NETWORK_CAPTURE = "HYPERDX_ENABLE_ADVANCED_NETWORK_CAPTURE"
 OTEL_SERVICE_VERSION = "OTEL_SERVICE_VERSION"
 SAMPLE_RATE = "SAMPLE_RATE"
 
@@ -50,6 +51,11 @@ INVALID_INSECURE_ERROR = (
 INVALID_LOCAL_VIS_ERROR = (
     "Unable to parse "
     + "HYPERDX_ENABLE_LOCAL_VISUALIZATIONS environment variable. "
+    + "Defaulting to false."
+)
+INVALID_LOCAL_ADVANCED_NETWORK_CAPTURE_ERROR = (
+    "Unable to parse "
+    + "HYPERDX_ENABLE_ADVANCED_NETWORK_CAPTURE environment variable. "
     + "Defaulting to false."
 )
 INVALID_LOGS_INSECURE_ERROR = (
@@ -243,6 +249,7 @@ class HyperDXOptions:
     dataset = None
     metrics_dataset = None
     enable_local_visualizations = False
+    enable_advanced_network_capture = False
 
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     def __init__(
@@ -271,6 +278,7 @@ class HyperDXOptions:
         traces_exporter_protocol: str = None,
         metrics_exporter_protocol: str = None,
         logs_exporter_protocol: str = None,
+        enable_advanced_network_capture: bool = False,
     ):
         self.debug = parse_bool(DEBUG, (debug or False), INVALID_DEBUG_ERROR)
         if self.debug:
@@ -431,6 +439,12 @@ class HyperDXOptions:
             HYPERDX_ENABLE_LOCAL_VISUALIZATIONS,
             enable_local_visualizations,
             INVALID_LOCAL_VIS_ERROR,
+        )
+
+        self.enable_advanced_network_capture = parse_bool(
+            HYPERDX_ENABLE_ADVANCED_NETWORK_CAPTURE,
+            enable_advanced_network_capture,
+            INVALID_LOCAL_ADVANCED_NETWORK_CAPTURE_ERROR,
         )
 
     def get_traces_endpoint(self) -> str:
