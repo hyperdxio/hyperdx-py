@@ -538,13 +538,13 @@ test = ["responses (==0.22.0)"]
 
 [[package]]
 name = "opentelemetry-instrumentation"
-version = "0.39b0"
+version = "0.40b0"
 description = "Instrumentation Tools & Auto Instrumentation for OpenTelemetry Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "opentelemetry_instrumentation-0.39b0-py3-none-any.whl", hash = "sha256:fcfd74413159fe797e343104f7e85a3f8146713634debcac10a057ac7f1eb011"},
-    {file = "opentelemetry_instrumentation-0.39b0.tar.gz", hash = "sha256:2a6d1f386aa769dc763e6f2c6b483f50c4024f1bc76a78b57f05ae05970ce5f4"},
+    {file = "opentelemetry_instrumentation-0.40b0-py3-none-any.whl", hash = "sha256:789d3726e698aa9526dd247b461b9172f99a4345571546c4aecf40279679fc8e"},
+    {file = "opentelemetry_instrumentation-0.40b0.tar.gz", hash = "sha256:08bebe6a752514ed61e901e9fee5ccf06ae7533074442e707d75bb65f3e0aa17"},
 ]
 
 [package.dependencies]
@@ -977,4 +977,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7, >= 3.7.2"
-content-hash = "af8efaee444c6087e128ffd1d9830482cf315705037524f961ac097615fa2af1"
+content-hash = "81f771d5964e950ca507b084983505f87125407aaa1cb629a8c844c0ae738382"
