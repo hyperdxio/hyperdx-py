@@ -1,7 +1,6 @@
 # HyperDX OpenTelemetry Distro for Python
 
 [![OSS Lifecycle](https://img.shields.io/osslifecycle/hyperdxio/hyperdx-opentelemetry-python)](https://github.com/hyperdxio/home/blob/main/hyperdx-oss-lifecycle-and-practices.md)
-[![CircleCI](https://circleci.com/gh/hyperdxio/hyperdx-opentelemetry-python.svg?style=shield)](https://circleci.com/gh/hyperdxio/hyperdx-opentelemetry-python)
 [![PyPi](https://img.shields.io/pypi/v/hyperdx-opentelemetry)](https://pypi.org/project/hyperdx-opentelemetry/)
 
 > This project is a fork from https://github.com/honeycombio/honeycomb-opentelemetry-python
@@ -14,7 +13,7 @@ It makes getting started with OpenTelemetry and HyperDX easier!
 
 Latest release built with:
 
-- [OpenTelemetry version 1.18.0/0.39b0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.18.0)
+- [OpenTelemetry version 1.22.0/0.43b0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.22.0)
 
 ## Requirements
 
