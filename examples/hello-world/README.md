@@ -1,6 +1,6 @@
 # hello-world
 
-This simple Python app returns "Hello World". This app uses the `configure_opentelemetry` method from `hyperdx.opentelemetry` to set up OpenTelemetry to export data to HyperDX through configuration options set in the app's code. It is also possible to set configuration options through the `opentelemetry_instrument` command (see the [flask app](../hello-world-flask/README.md) as an example).
+This simple Python app returns "Hello World". This app uses the `configure_opentelemetry` method from `honeycomb.opentelemetry` to set up OpenTelemetry to export data to HyperDX through configuration options set in the app's code. It is also possible to set configuration options through the `opentelemetry_instrument` command (see the [flask app](../hello-world-flask/README.md) as an example).
 
 ## Prerequisites
 
