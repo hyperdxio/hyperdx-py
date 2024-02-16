@@ -16,7 +16,7 @@ build: install
 
 #: build and publish a package
 publish: install
-	poetry publish -u warrenathyper -p ${PYPI_PASSWORD}
+	poetry publish
 
 #: cleans up smoke test output
 clean-smoke-tests:
