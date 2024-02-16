@@ -27,7 +27,7 @@ Check out the [Hello-World Readme](hello-world/README.md) for setting this up!
 
 If you'd like to use Docker for running these examples, there is a `docker-compose.yml` we use for smoke-tests [that may be helpful.](../smoke-tests/docker-compose.yml)
 
-We have the HYPERDX_API_ENDPOINT set to an OpenTelemetry Collector. This can be modified as needed or deleted entirely to use the default HyperDX API Endpoint.
+We have the HONEYCOMB_API_ENDPOINT set to an OpenTelemetry Collector. This can be modified as needed or deleted entirely to use the default Honeycomb API Endpoint.
 
 Because each example uses the same port, either comment out the other apps in the docker-compose file, or specify the app and protocol to run:
 
