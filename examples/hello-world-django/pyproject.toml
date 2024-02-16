@@ -1,14 +1,16 @@
 [tool.poetry]
-name = "hello-world"
+name = "hello-world-django"
 version = "0.1.0"
 description = ""
 authors = ["HyperDX <support@hyperdx.io>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
+django = "^5.0.1"
 hyperdx-opentelemetry = {path = "../../", develop = true}
 opentelemetry-api = "1.22.0"
+opentelemetry-instrumentation = "0.43b0"
 
 [build-system]
 requires = ["poetry-core"]

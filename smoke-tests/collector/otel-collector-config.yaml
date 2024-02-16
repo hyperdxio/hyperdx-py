@@ -12,24 +12,19 @@ exporters:
     path: /var/lib/data.json
   logging:
     loglevel: debug
-  otlphttp/hdx:
-    endpoint: 'https://in-otel.hyperdx.io'
-    headers:
-      authorization: <YOUR_API_KEY>
-    compression: gzip
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [file, logging, otlphttp/hdx]
+      exporters: [file, logging]
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [file, logging, otlphttp/hdx]
+      exporters: [file, logging]
     logs:
       receivers: [otlp]
       processors: [batch]
       # exporters: [file, logging]
-      exporters: [logging, otlphttp/hdx]
+      exporters: [logging]
