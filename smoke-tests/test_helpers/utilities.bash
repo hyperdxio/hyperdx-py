@@ -100,7 +100,7 @@ wait_for_ready_collector() {
 	MAX_RETRIES=10
 	echo -n "# 🍿 Setting up ${COLLECTOR}" >&3
 	NEXT_WAIT_TIME=0
-	until [ $NEXT_WAIT_TIME -eq $MAX_RETRIES ] || [[ $(docker-compose logs ${COLLECTOR} | grep "Everything is ready. Begin running and processing data.") ]]
+	until [ $NEXT_WAIT_TIME -eq $MAX_RETRIES ] || [[ $(docker compose logs ${COLLECTOR} | grep "Everything is ready. Begin running and processing data.") ]]
 	do
 		echo -n " ... $(( NEXT_WAIT_TIME++ ))s" >&3
 		sleep $NEXT_WAIT_TIME
@@ -118,7 +118,7 @@ wait_for_ready_app() {
 	MAX_RETRIES=10
 	echo -n "# 🍿 Setting up ${CONTAINER}" >&3
 	NEXT_WAIT_TIME=0
-	until [ $NEXT_WAIT_TIME -eq $MAX_RETRIES ] || [[ $(docker-compose logs ${CONTAINER} | grep "Running on http:") ]]
+	until [ $NEXT_WAIT_TIME -eq $MAX_RETRIES ] || [[ $(docker compose logs ${CONTAINER} | grep "Running on http:") ]]
 	do
 		echo -n " ... $(( NEXT_WAIT_TIME++ ))s" >&3
 		sleep $NEXT_WAIT_TIME

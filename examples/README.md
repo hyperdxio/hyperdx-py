@@ -32,5 +32,5 @@ We have the HONEYCOMB_API_ENDPOINT set to an OpenTelemetry Collector. This can b
 Because each example uses the same port, either comment out the other apps in the docker-compose file, or specify the app and protocol to run:
 
 ```bash
-cd smoke-tests && docker-compose up --build app-sdk-grpc
+cd smoke-tests && docker compose up --build app-sdk-grpc
 ```

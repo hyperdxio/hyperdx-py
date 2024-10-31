@@ -9,7 +9,7 @@ TRACER_NAME="hello_world_flask_tracer"
 METER_NAME="hello_world_flask_meter"
 
 setup_file() {
-	docker-compose up --build --detach collector ${CONTAINER_NAME}
+	docker compose up --build --detach collector ${CONTAINER_NAME}
 	wait_for_ready_app ${CONTAINER_NAME}
 	curl --silent localhost:5000
 	wait_for_traces
@@ -18,8 +18,8 @@ setup_file() {
 
 teardown_file() {
  	cp collector/data.json collector/data-results/data-${CONTAINER_NAME}.json
-	docker-compose stop ${CONTAINER_NAME}
-	docker-compose restart collector
+	docker compose stop ${CONTAINER_NAME}
+	docker compose restart collector
 	wait_for_flush
 }
 

@@ -30,7 +30,7 @@ In the smoke-tests directory there exists a `docker-compose.yml` to run in Docke
 Because each example uses the same port, either comment out the other apps in the docker-compose file, or specify the app to run:
 
 ```bash
-cd smoke-tests && docker-compose up --build app-sdk-grpc
+cd smoke-tests && docker compose up --build app-sdk-grpc
 ```
 
 ## Testing

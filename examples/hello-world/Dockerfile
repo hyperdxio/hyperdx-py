@@ -1,4 +1,4 @@
-# to be run with docker-compose in smoke-tests directory
+# to be run with docker compose in smoke-tests directory
 FROM python:3.10-slim
 
 WORKDIR /app
