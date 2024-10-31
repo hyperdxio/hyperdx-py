@@ -93,14 +93,14 @@ smoke:
 	@echo ""
 	@echo "+++ Temporary Placeholder."
 	@echo ""
-	cd smoke-tests && docker-compose up --build app-sdk-grpc
+	cd smoke-tests && docker compose up --build app-sdk-grpc
 
 #: placeholder for smoke tests, tear down the app
 unsmoke:
 	@echo ""
 	@echo "+++ Spinning down the smokers."
 	@echo ""
-	cd smoke-tests && docker-compose down --volumes
+	cd smoke-tests && docker compose down --volumes
 
 EXAMPLE_SERVICE_NAME ?= otel-python-example
 run_example: export OTEL_SERVICE_NAME := $(EXAMPLE_SERVICE_NAME)

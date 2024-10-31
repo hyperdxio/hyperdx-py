@@ -10,17 +10,17 @@ METER_NAME="hello_world_meter"
 
 setup_file() {
 	echo "# 🚧" >&3
-	docker-compose up --build --detach collector
+	docker compose up --build --detach collector
 	wait_for_ready_collector ${COLLECTOR_NAME}
-	docker-compose up --build --detach ${CONTAINER_NAME}
+	docker compose up --build --detach ${CONTAINER_NAME}
 	wait_for_traces
 	wait_for_metrics
 }
 
 teardown_file() {
 	cp collector/data.json collector/data-results/data-${CONTAINER_NAME}.json
-	docker-compose stop ${CONTAINER_NAME}
-	docker-compose restart collector
+	docker compose stop ${CONTAINER_NAME}
+	docker compose restart collector
 	wait_for_flush
 }
 
