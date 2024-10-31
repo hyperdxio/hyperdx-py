@@ -27,7 +27,7 @@ teardown_file() {
 
 @test "Auto instrumentation produces a flask span" {
   result=$(span_names_for "opentelemetry.instrumentation.flask")
-  assert_equal "$result" '"/"'
+  assert_equal "$result" '"GET /"'
 }
 
 @test "Manual instrumentation produces parent and child spans with names of spans" {
