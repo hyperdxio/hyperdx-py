@@ -13,11 +13,11 @@ It makes getting started with OpenTelemetry and HyperDX easier!
 
 Latest release built with:
 
-- [OpenTelemetry version 1.22.0/0.43b0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.22.0)
+- [OpenTelemetry version 1.27.0/0.48b0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.27.0)
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python 3.8 or higher
 
 ## Getting Started
 
