@@ -1,0 +1,23 @@
+name: Release
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  main:
+    timeout-minutes: 8
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v2.1
+        with:
+          python_version: "3.10"
+          poetry_version: "==2.0.1"
+          pypi_token: ${{ secrets.PYPI_API_TOKEN }}
+          poetry_publish_options: "--dry-run"
