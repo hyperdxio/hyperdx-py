@@ -8,10 +8,10 @@ packages = [{ include = "hyperdx", from = "src" }]
 
 [tool.poetry.dependencies]
 python = ">= 3.9"
-opentelemetry-api = "1.30.0"
-opentelemetry-sdk = "1.30.0"
-opentelemetry-exporter-otlp = "1.30.0"
-opentelemetry-instrumentation = "0.51b0"
+opentelemetry-api = ">=1.30.0,<2.0.0"
+opentelemetry-sdk = ">=1.30.0,<2.0.0"
+opentelemetry-exporter-otlp = ">=1.30.0,<2.0.0"
+opentelemetry-instrumentation = { version = ">=0.51b0,<1.0.0", allow-prereleases = true }
 setuptools = ">= 78.1.1"
 
 [tool.poetry.group.dev.dependencies]

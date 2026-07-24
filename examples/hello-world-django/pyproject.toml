@@ -9,8 +9,8 @@ readme = "README.md"
 python = "^3.11"
 django = "^5.0.1"
 hyperdx-opentelemetry = {path = "../../", develop = true}
-opentelemetry-api = "1.30.0"
-opentelemetry-instrumentation = "0.51b0"
+opentelemetry-api = ">=1.30.0,<2.0.0"
+opentelemetry-instrumentation = { version = ">=0.51b0,<1.0.0", allow-prereleases = true }
 
 [build-system]
 requires = ["poetry-core"]

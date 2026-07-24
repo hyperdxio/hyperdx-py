@@ -12,6 +12,8 @@ from hyperdx.opentelemetry.distro import configure_opentelemetry
 from hyperdx.opentelemetry.options import HyperDXOptions
 from hyperdx.opentelemetry.version import __version__
 
+from tests.utils import get_metric_readers
+
 
 def test_distro_configure_defaults():
     configure_opentelemetry()
@@ -46,4 +48,4 @@ def test_can_enable_metrics():
 
     meter_provider = get_meter_provider()
     # a real meter provider has it's _sdk_config property set, ensure we have a reader configured
-    assert len(meter_provider._sdk_config.metric_readers) == 1
+    assert len(get_metric_readers(meter_provider)) == 1
