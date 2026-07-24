@@ -18,4 +18,5 @@ jobs:
     uses: hyperdxio/.github/.github/workflows/pr-triage.yml@main
     with:
       pr_number: ${{ inputs.pr_number }}
-    secrets: inherit
+    secrets:
+      DOTGITHUB_READ_TOKEN: ${{ secrets.DOTGITHUB_READ_TOKEN }}

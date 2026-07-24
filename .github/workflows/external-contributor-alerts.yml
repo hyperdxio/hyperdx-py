@@ -10,4 +10,5 @@ jobs:
       issues: write
       pull-requests: write
     uses: hyperdxio/.github/.github/workflows/external-contributor-alerts.yml@main
-    secrets: inherit
+    secrets:
+      SLACK_WEBHOOK_OSS_PRS: ${{ secrets.SLACK_WEBHOOK_OSS_PRS }}

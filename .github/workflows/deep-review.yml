@@ -19,4 +19,5 @@ jobs:
     uses: hyperdxio/.github/.github/workflows/deep-review.yml@main
     with:
       pr_number: ${{ inputs.pr_number }} # empty on PR events; the workflow falls back to the PR event
-    secrets: inherit
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
