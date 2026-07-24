@@ -1,0 +1,22 @@
+name: Deep Code Review
+on:
+  pull_request_target:
+    types: [opened, synchronize, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to review
+        required: true
+        type: string
+jobs:
+  deep-review:
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    uses: hyperdxio/.github/.github/workflows/deep-review.yml@main
+    with:
+      pr_number: ${{ inputs.pr_number }} # empty on PR events; the workflow falls back to the PR event
+    secrets: inherit
