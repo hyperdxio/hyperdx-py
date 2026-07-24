@@ -9,9 +9,16 @@ ENV PYTHONFAULTHANDLER=1 \
   PIP_NO_CACHE_DIR=off \
   PIP_DISABLE_PIP_VERSION_CHECK=on \
   PIP_DEFAULT_TIMEOUT=100 \
-  POETRY_VERSION=1.3.2
+  POETRY_VERSION=2.4.1 \
+  POETRY_HOME=/opt/poetry
 
-RUN pip install "poetry==$POETRY_VERSION"
+# Install Poetry in its own virtualenv so that installing the project's deps
+# (with virtualenvs.create=false, i.e. into the system env) can't downgrade
+# Poetry's own dependencies out from under it. Symlink the entrypoint only so
+# the app still runs under the system `python`.
+RUN python -m venv "$POETRY_HOME" \
+  && "$POETRY_HOME/bin/pip" install "poetry==$POETRY_VERSION" \
+  && ln -s "$POETRY_HOME/bin/poetry" /usr/local/bin/poetry
 # This image is single purpose, so we won't need to compartmentalize Py deps in virtualenvs.
 RUN poetry config virtualenvs.create false
 
@@ -21,7 +28,9 @@ RUN poetry install
 
 # Copy the examples into the image and install deps.
 COPY examples/ ./examples/
-RUN cd ./examples/hello-world && poetry install
+# The example is an app, not a package, so skip installing it as a root package
+# (Poetry 2.x errors on this instead of warning); its deps are still installed.
+RUN cd ./examples/hello-world && poetry install --no-root
 
 # From this point forward, we're operating on the example app.
 WORKDIR /app/examples/hello-world
