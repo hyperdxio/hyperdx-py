@@ -1,5 +1,27 @@
 # hyperdx-opentelemetry-python changelog
 
+## [0.4.0] - 2026-07-27
+
+### Enhancements
+
+- Relax OpenTelemetry constraints to ranges (#41) — `opentelemetry-{api,sdk,exporter-otlp}` move from `==1.30.0` to `>=1.30.0,<2.0.0` and `opentelemetry-instrumentation` from `==0.51b0` to `>=0.51b0,<1.0.0`, so the distro can be co-installed with other OpenTelemetry-based libraries that require a newer core
+
+### Fixes
+
+- Repair smoke-test docker build and `pkg_resources` runtime error (#40)
+- Pin `setuptools >= 78.1.1` (#37)
+
+### Maintenance
+
+- ci: move release job off retired ubuntu-20.04 runner (#43)
+- ci: forward only required secrets to reusable workflows (#42)
+- ci: add hyperdxio org-wide reusable workflow caller stubs (#42)
+- ci: use ubuntu-latest instead of retired ubuntu-20.04 runner (#38)
+- chore(deps): bump idna from 3.10 to 3.15 (#39)
+- chore(deps): bump protobuf from 5.29.3 to 5.29.6 (#36)
+
+Note: releases 0.3.0b0, 0.3.0, and 0.2.0 were published without changelog entries. This entry covers changes since 0.3.0 only.
+
 ## [0.2.1b0] - 2023-05-16
 
 ### Fixes
