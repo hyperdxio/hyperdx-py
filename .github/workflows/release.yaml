@@ -8,7 +8,7 @@ concurrency:
 jobs:
   build-and-publish-to-pypi:
     timeout-minutes: 8
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
